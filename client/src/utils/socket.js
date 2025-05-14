@@ -1,6 +1,10 @@
 import { io } from "socket.io-client";
 
-export const socket = io("http://localhost:5000", { withCredentials: true });
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
+console.log(backendUrl);
+
+export const socket = io(backendUrl, { withCredentials: true });
 
 socket.on("connect", () => {
   const name = sessionStorage.getItem("chat_username");
