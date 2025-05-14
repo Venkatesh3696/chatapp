@@ -7,6 +7,7 @@ export const handleSocketConnection = (io, socket) => {
   //   });
 
   socket.on("set_username", (username) => {
+    console.log(`User ${username} has set their username`);
     users[socket.id] = { username };
     io.emit("users_list", mapUsers(users));
   });

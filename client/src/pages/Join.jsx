@@ -4,10 +4,14 @@ import { socket } from "../utils/socket";
 
 const Join = () => {
   const [name, setName] = useState("");
+  const [joining, setJoining] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const handleUsersList = () => {
+    if (!joining) return;
+
+    const handleUsersList = (data) => {
+      console.log("Users list received:", data);
       socket.off("users_list", handleUsersList);
       navigate("/");
     };
@@ -16,13 +20,14 @@ const Join = () => {
     return () => {
       socket.off("users_list", handleUsersList);
     };
-  }, [navigate]);
+  }, [joining, navigate]);
 
   const handleJoin = (e) => {
     e.preventDefault();
     if (!name.trim()) return;
 
     sessionStorage.setItem("chat_username", name);
+    setJoining(true);
     socket.emit("set_username", name);
   };
 
