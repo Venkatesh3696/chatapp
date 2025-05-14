@@ -29,6 +29,7 @@ const Join = () => {
     sessionStorage.setItem("chat_username", name);
     setJoining(true);
     socket.emit("set_username", name);
+    navigate("/");
   };
 
   return (
