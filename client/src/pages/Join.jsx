@@ -13,7 +13,12 @@ const Join = () => {
     sessionStorage.setItem("chat_username", name);
     console.log("Emitting set_username", name, socket.connected);
     socket.emit("set_username", name);
-    navigate("/");
+
+    const handleUsersList = () => {
+      socket.off("users_list", handleUsersList);
+      navigate("/");
+    };
+    socket.on("users_list", handleUsersList);
   };
 
   return (
