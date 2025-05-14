@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { socket } from "../utils/socket";
 
@@ -6,19 +6,24 @@ const Join = () => {
   const [name, setName] = useState("");
   const navigate = useNavigate();
 
-  const handleJoin = (e) => {
-    e.preventDefault();
-    if (!name.trim()) return;
-
-    sessionStorage.setItem("chat_username", name);
-    console.log("Emitting set_username", name, socket.connected);
-    socket.emit("set_username", name);
-
+  useEffect(() => {
     const handleUsersList = () => {
       socket.off("users_list", handleUsersList);
       navigate("/");
     };
     socket.on("users_list", handleUsersList);
+
+    return () => {
+      socket.off("users_list", handleUsersList);
+    };
+  }, [navigate]);
+
+  const handleJoin = (e) => {
+    e.preventDefault();
+    if (!name.trim()) return;
+
+    sessionStorage.setItem("chat_username", name);
+    socket.emit("set_username", name);
   };
 
   return (
