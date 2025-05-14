@@ -1,17 +1,42 @@
+const users = {};
 export const handleSocketConnection = (io, socket) => {
   console.log(`client connected! `);
 
-  socket.on("set username", (userName) => {
-    socket.userName = userName;
-    console.log(`${socket.userName} joined chat`);
+  //   socket.onAny((event, ...args) => {
+  //     console.log("Received event:", event, args);
+  //   });
+
+  socket.on("set_username", (username) => {
+    users[socket.id] = { username };
+    io.emit("users_list", mapUsers(users));
+  });
+
+  socket.on("get_users_list", () => {
+    socket.emit("users_list", mapUsers(users));
+  });
+
+  socket.on("private_message", ({ to, message }) => {
+    console.log("message received ", message);
+    socket.to(to).emit("private_message", {
+      from: socket.id,
+      message,
+    });
   });
 
   socket.on("chat message", (msg) => {
-    console.log("message received ", msg);
     io.emit("chat message", { id: socket.id, ...msg });
   });
 
   socket.on("disconnect", () => {
-    console.log("client disconnected ");
+    console.log(`user ${socket.id} disconnected!`);
+    delete users[socket.id];
+    io.emit("users_list", mapUsers(users));
   });
+
+  function mapUsers(users) {
+    return Object.entries(users).map(([id, data]) => ({
+      socketId: id,
+      ...data,
+    }));
+  }
 };
