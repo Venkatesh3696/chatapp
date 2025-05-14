@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { socket } from "../utils/socket";
 
-const Join = () => {
+const Join = ({ onJoin }) => {
   const [name, setName] = useState("");
   const [joining, setJoining] = useState(false);
   const navigate = useNavigate();
@@ -27,9 +27,9 @@ const Join = () => {
     if (!name.trim()) return;
 
     sessionStorage.setItem("chat_username", name);
+    if (onJoin) onJoin(name);
     setJoining(true);
     socket.emit("set_username", name);
-    navigate("/");
   };
 
   return (
