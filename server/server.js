@@ -24,7 +24,7 @@ app.get("/", (req, res) => {
   res.json("hi from express server");
 });
 
-const PORT = (process.env.PORT = 5000);
+const PORT = process.env.PORT || 5000;
 server.listen(5000, () => {
   console.log(`Server is listening at port ${PORT} `);
 });
