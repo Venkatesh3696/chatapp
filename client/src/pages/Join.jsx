@@ -11,6 +11,7 @@ const Join = () => {
     if (!name.trim()) return;
 
     sessionStorage.setItem("chat_username", name);
+    console.log("Emitting set_username", name, socket.connected);
     socket.emit("set_username", name);
     navigate("/");
   };
